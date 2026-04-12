@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Quic;
 using System.Text;
 
-namespace BRUHWEGOOD
+namespace MusiShop
 {
     public class Product
     {

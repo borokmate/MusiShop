@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BRUHWEGOOD
+namespace MusiShop
 {
     //public class Vinyl : Product
     //{
