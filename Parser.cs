@@ -71,5 +71,27 @@ namespace MusiShop
             return products;
 
         }
+
+        public static void WriteProduct(Product product)
+        {
+            if (!Directory.Exists(product.Type))
+                Directory.CreateDirectory(product.Type);
+            string file = JsonSerializer.Serialize(product, options);
+            File.WriteAllText(product.Type + '/' + product.Name + ".json", file);
+        }
+
+        public static void WriteProducts(string type, Product[] products)
+        {
+            foreach (var product in products)
+            {
+                string file = JsonSerializer.Serialize(product, options);
+                File.WriteAllText(type + '/' + product.Name + ".json", file);
+            }
+        }
+
+        public static string[] GetTypes()
+        {
+            return Directory.GetDirectories("./").Select(x => x.Substring(x.LastIndexOf('/') + 1)).ToArray();
+        }
     }
 }
