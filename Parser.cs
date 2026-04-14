@@ -93,5 +93,31 @@ namespace MusiShop
         {
             return Directory.GetDirectories("./").Select(x => x.Substring(x.LastIndexOf('/') + 1)).ToArray();
         }
+        public static void ReplaceProduct(string originalName, string originalType, Product newProduct)
+        {
+            string path = originalType;
+            string fullPath = path + '/' + originalName + ".json";
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+            else
+            {
+                throw new Exception("whatadaf: " + fullPath);
+            }
+            if (!Directory.Exists(newProduct.Type))
+                Directory.CreateDirectory(newProduct.Type);
+            string file = JsonSerializer.Serialize(newProduct, options);
+            File.WriteAllText(newProduct.Type + '/' + newProduct.Name + ".json", file);
+        }
+        public static void DeleteProduct(Product product)
+        {
+            string path = product.Type;
+            string fullPath = path + '/' + product.Name + ".json";
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
     }
 }
