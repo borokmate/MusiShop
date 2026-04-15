@@ -119,5 +119,40 @@ namespace MusiShop
                 File.Delete(fullPath);
             }
         }
+        public static bool ValidateProduct(string type, string name)
+        {
+            string fullPath = type + '/' + name + ".json";
+            if (!File.Exists(fullPath))
+                return false;
+            try
+            {
+                var text = File.ReadAllText(fullPath);
+                var product = JsonSerializer.Deserialize<Product>(text, options);
+                return product != null
+                    && !string.IsNullOrEmpty(product.Name)
+                    && !string.IsNullOrEmpty(product.Type)
+                    && product.Price >= 0
+                    && product.Quantity >= 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static List<string> ValidateAll()
+        {
+            var broken = new List<string>();
+            foreach (var dir in Directory.GetDirectories("./"))
+            {
+                foreach (var file in Directory.GetFiles(dir))
+                {
+                    string type = dir.Substring(dir.LastIndexOf('/') + 1);
+                    string name = Path.GetFileNameWithoutExtension(file);
+                    if (!ValidateProduct(type, name))
+                        broken.Add(file);
+                }
+            }
+            return broken;
+        }
     }
 }
