@@ -32,5 +32,32 @@ namespace MusiShop
         //     CommandLineInterpreter,
         //     ExitProgram
         // };
+        private static readonly string[] currMenu = mainMenu;
+        // private static readonly Action[] currMenuFuncs = mainMenuFuncs;
+        private static int currItem = 0;
+        private static void PrintMenu(string[] menu)
+        {
+            int index = 0;
+            foreach (var item in menu)
+            {
+                if (item.StartsWith("["))
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(item);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    index++;
+                    continue;
+                }
+                if (index++ == currItem)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.Write(item);
+                Console.BackgroundColor = ConsoleColor.Black; // dumb ahh thing ngl
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine();
+            }
+        }
     }
 }
