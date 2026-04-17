@@ -59,5 +59,40 @@ namespace MusiShop
                 Console.WriteLine();
             }
         }
+        public static void MainLoop()
+        {
+            while (true)
+            {
+                Console.Clear();
+                GetMenuItem(currMenu);
+                // currMenuFuncs[currItem]();
+            }
+        }
+        private static void GetMenuItem(string[] menu)
+        {
+            ConsoleKeyInfo key;
+            do
+            {
+                PrintMenu(menu);
+                key = Console.ReadKey();
+                switch (key.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        if (0 < currItem) currItem--;
+                        else currItem = menu.Length - 1;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        if (currItem < menu.Length - 1) currItem++;
+                        else currItem = 1;
+                        break;
+                    default:
+                        int found = Array.FindIndex(menu, x => x[0] == key.KeyChar);
+                        if (found != -1) currItem = found;
+                        break;
+                }
+                Console.Clear();
+            }
+            while (key.Key != ConsoleKey.Enter);
+        }
     }
 }
