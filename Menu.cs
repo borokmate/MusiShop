@@ -504,5 +504,37 @@ namespace MusiShop
             }
             return inp;
         }
+
+        private static void ValidateFiles()
+        {
+            var broken = Parser.ValidateAll();
+            if (broken.Count > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Warning: corrupted files found:");
+                broken.ForEach(Console.WriteLine);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine("All files all valid!");
+            }
+            WaitForSpace();
+        }
+        private static void ValidateFilesNoSpace()
+        {
+            var broken = Parser.ValidateAll();
+            if (broken.Count > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Warning: corrupted files found:");
+                broken.ForEach(Console.WriteLine);
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine("All files all valid!");
+            }
+        }
     }
 }
