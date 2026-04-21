@@ -536,5 +536,696 @@ namespace MusiShop
                 Console.WriteLine("All files all valid!");
             }
         }
+
+        private static void CommandLineInterpreter()
+        {
+            string? command = "";
+            while (command != "exit")
+            {
+                Console.Write(System.Environment.MachineName + ">");
+                command = Console.ReadLine();
+                if (command == "" || command == null) continue;
+                var split = command.Split(' ');
+                switch (split[0])
+                {
+                    case "create":
+                        Create(split);
+                        break;
+                    case "select":
+                        Select(split);
+                        break;
+                    case "print":
+                        Print(split);
+                        break;
+                    case "update":
+                        Update(split);
+                        break;
+                    case "delete":
+                        Delete(split);
+                        break;
+                    case "run":
+                        Run(split);
+                        break;
+                    case "save":
+                        Save(split);
+                        break;
+                    case "validate":
+                        ValidateFilesNoSpace();
+                        break;
+                }
+                usedCommands.Add(command);
+            }
+        }
+        private static void RunCommand(string[] commands)
+        {
+            foreach(var command in commands)
+            {
+                if (command == "exit") break;
+                Console.WriteLine(System.Environment.MachineName + ">" + command);
+                if (command == "" || command == null) continue;
+                var split = command.Split(' ');
+                switch (split[0])
+                {
+                    case "create":
+                        Create(split);
+                        break;
+                    case "select":
+                        Select(split);
+                        break;
+                    case "print":
+                        Print(split);
+                        break;
+                    case "update":
+                        Update(split);
+                        break;
+                    case "delete":
+                        Delete(split);
+                        break;
+                    case "run":
+                        Run(split);
+                        break;
+                    case "validate":
+                        ValidateFilesNoSpace();
+                        break;
+                }
+            }
+            
+        }
+        private static void Create(string[] args)
+        {
+            DateTime? date = null;
+            string? name = null;
+            int? price = null;
+            int? quantity = null;
+            string? type = null;
+            try
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    string arg = args[i];
+                    switch (arg)
+                    {
+                        case "-date":
+                            date = DateTime.Parse(args[i + 1]);
+                            break;
+                        case "-name":
+                            name = args[i + 1];
+                            break;
+                        case "-price":
+                            price = int.Parse(args[i + 1]);
+                            break;
+                        case "-quantity":
+                            quantity = int.Parse(args[i + 1]);
+                            break;
+                        case "-type":
+                            type = args[i + 1];
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("The input was wrong!");
+                return;
+            }
+            if (date == null || name == null || price == null || quantity == null || type == null)
+            {
+                Console.WriteLine("Missing required fields!");
+                return;
+            }
+            Product product = new Product(date.Value, name, price.Value, quantity.Value, type);
+            Parser.WriteProduct(product);
+            //Product product = new Product();
+        }
+        private static void Select(string[] args)
+        {
+            var products = Parser.ReadProducts();
+            if (args.Length == 1)
+            {
+                var grouped = products.GroupBy(x => x.Type).OrderBy(g => g.Key);
+
+                var menuItems = new List<string>();
+
+                foreach (var group in grouped)
+                {
+                    menuItems.Add($"[{group.Key}]"); // header
+                    foreach (var product in group.OrderBy(x => x.Name))
+                    {
+                        menuItems.Add("  " + product.Name);
+                    }
+                }
+                currItem = -1;
+                PrintMenu(menuItems.ToArray());
+            }
+            else
+            {
+                try
+                {
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        string arg = args[i];
+                        switch (arg)
+                        {
+                            case "-date":
+                                if (args[i + 1] == "<")
+                                {
+                                    products = products.Where(x => x.Date < DateTime.Parse(args[i + 2])).ToArray();
+                                }
+                                else if (args[i + 1] == ">")
+                                {
+                                    products = products.Where(x => x.Date > DateTime.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "<=")
+                                {
+                                    products = products.Where(x => x.Date <= DateTime.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == ">=")
+                                {
+                                    products = products.Where(x => x.Date >= DateTime.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "==")
+                                {
+                                    products = products.Where(x => x.Date == DateTime.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "!=")
+                                {
+                                    products = products.Where(x => x.Date != DateTime.Parse(args[i + 2])).ToArray();
+
+                                }
+                                break;
+                            case "-name":
+                                if (args[i + 1] == "like")
+                                {
+                                    products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                                }
+                                else if (args[i + 1] == "==")
+                                {
+                                    products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                                }
+                                else if (args[i + 1] == "!=")
+                                {
+                                    products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                                }
+                                break;
+                            case "-price":
+                                if (args[i + 1] == "<")
+                                {
+                                    products = products.Where(x => x.Price < int.Parse(args[i + 2])).ToArray();
+                                }
+                                else if (args[i + 1] == ">")
+                                {
+                                    products = products.Where(x => x.Price > int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "<=")
+                                {
+                                    products = products.Where(x => x.Price <= int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == ">=")
+                                {
+                                    products = products.Where(x => x.Price >= int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "==")
+                                {
+                                    products = products.Where(x => x.Price == int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "!=")
+                                {
+                                    products = products.Where(x => x.Price != int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                break;
+                            case "-quantity":
+                                if (args[i + 1] == "<")
+                                {
+                                    products = products.Where(x => x.Quantity < int.Parse(args[i + 2])).ToArray();
+                                }
+                                else if (args[i + 1] == ">")
+                                {
+                                    products = products.Where(x => x.Quantity > int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "<=")
+                                {
+                                    products = products.Where(x => x.Quantity <= int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == ">=")
+                                {
+                                    products = products.Where(x => x.Quantity >= int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "==")
+                                {
+                                    products = products.Where(x => x.Quantity == int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                else if (args[i + 1] == "!=")
+                                {
+                                    products = products.Where(x => x.Quantity != int.Parse(args[i + 2])).ToArray();
+
+                                }
+                                break;
+                            case "-type":
+                                if (args[i + 1] == "like")
+                                {
+                                    products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                                }
+                                else if (args[i + 1] == "==")
+                                {
+                                    products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                                }
+                                else if (args[i + 1] == "!=")
+                                {
+                                    products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                                }
+                                break;
+                        }
+                    }
+                }
+                catch
+                {
+                    Console.WriteLine("The input was wrong!");
+                    return;
+                }
+                var grouped = products.GroupBy(x => x.Type).OrderBy(g => g.Key);
+
+                var menuItems = new List<string>();
+
+                foreach (var group in grouped)
+                {
+                    menuItems.Add($"[{group.Key}]"); // header
+                    foreach (var product in group.OrderBy(x => x.Name))
+                    {
+                        menuItems.Add("  " + product.Name);
+                    }
+                }
+                PrintMenu(menuItems.ToArray());
+            }
+        }
+        private static void Print(string[] args)
+        {
+            if (args.Length <= 1) return;
+            var products = Parser.ReadProducts();
+            if (products.Where(x => x.Name == args[1]).ToArray().Length <= 0)
+            {
+                Console.WriteLine("Product does not exist!");
+                return;
+            }
+            PrintProduct(products.Where(x => x.Name == args[1]).ToArray()[0], false);
+        }
+        private static void Update(string[] args)
+        {
+            var products = Parser.ReadProducts();
+            DateTime? date = null;
+            string? name = null;
+            int? price = null;
+            int? quantity = null;
+            string? type = null;
+            try
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    string arg = args[i];
+                    if (arg == "where") break;
+                    switch (arg)
+                    {
+                        case "-date":
+                            date = DateTime.Parse(args[i + 1]);
+                            break;
+                        case "-name":
+                            name = args[i + 1];
+                            break;
+                        case "-price":
+                            price = int.Parse(args[i + 1]);
+                            break;
+                        case "-quantity":
+                            quantity = int.Parse(args[i + 1]);
+                            break;
+                        case "-type":
+                            type = args[i + 1];
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("The input was wrong!");
+                return;
+            }
+            try
+            {
+                for (int i = Array.IndexOf(args, "where"); i < args.Length; i++)
+                {
+                    string arg = args[i];
+                    switch (arg)
+                    {
+                        case "-date":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Date < DateTime.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Date > DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Date <= DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Date >= DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Date == DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Date != DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-name":
+                            if (args[i + 1] == "like")
+                            {
+                                products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                            }
+                            break;
+                        case "-price":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Price < int.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Price > int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Price <= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Price >= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Price == int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Price != int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-quantity":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Quantity < int.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Quantity > int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Quantity <= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Quantity >= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Quantity == int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Quantity != int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-type":
+                            if (args[i + 1] == "like")
+                            {
+                                products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                            }
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("The input was wrong!");
+                return;
+            }
+            foreach (var product in products)
+            {
+                string ogName = product.Name;
+                string ogType = product.Type;
+                if (name != null)
+                {
+                    product.Name = name;
+                }
+                if (date != null)
+                {
+                    product.Date = date.Value;
+                }
+                if (price != null)
+                {
+                    product.Price = price.Value;
+                }
+                if (quantity != null)
+                {
+                    product.Quantity = quantity.Value;
+                }
+                if (type != null)
+                {
+                    product.Type = type;
+                }
+                Parser.ReplaceProduct(ogName, ogType, product);
+            }
+            
+        }
+        private static void Delete(string[] args)
+        {
+            var products = Parser.ReadProducts();
+            try
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    string arg = args[i];
+                    switch (arg)
+                    {
+                        case "-date":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Date < DateTime.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Date > DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Date <= DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Date >= DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Date == DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Date != DateTime.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-name":
+                            if (args[i + 1] == "like")
+                            {
+                                products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                            }
+                            break;
+                        case "-price":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Price < int.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Price > int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Price <= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Price >= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Price == int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Price != int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-quantity":
+                            if (args[i + 1] == "<")
+                            {
+                                products = products.Where(x => x.Quantity < int.Parse(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == ">")
+                            {
+                                products = products.Where(x => x.Quantity > int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "<=")
+                            {
+                                products = products.Where(x => x.Quantity <= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == ">=")
+                            {
+                                products = products.Where(x => x.Quantity >= int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Quantity == int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Quantity != int.Parse(args[i + 2])).ToArray();
+
+                            }
+                            break;
+                        case "-type":
+                            if (args[i + 1] == "like")
+                            {
+                                products = products.Where(x => x.Name.Contains(args[i + 2])).ToArray();
+                            }
+                            else if (args[i + 1] == "==")
+                            {
+                                products = products.Where(x => x.Name == args[i + 2]).ToArray();
+                            }
+                            else if (args[i + 1] == "!=")
+                            {
+                                products = products.Where(x => x.Name != args[i + 2]).ToArray();
+                            }
+                            break;
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("The input was wrong!");
+                return;
+            }
+            foreach (var product in products)
+            {
+                Parser.DeleteProduct(product);
+            }
+        }
+        private static void Run(string[] args)
+        {
+            string name = "out.txt";
+            try
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == "-i")
+                    {
+                        name = args[i + 1];
+                    }
+                }
+                var commands = File.ReadAllLines(name);
+                RunCommand(commands);
+            }
+            catch
+            {
+                Console.WriteLine("The input wasn't given correnctly!");
+            }
+        }
+        private static void Save(string[] args)
+        {
+            string name = "out.txt";
+            try
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    if (args[i] == "-o")
+                    {
+                        name = args[i + 1];
+                    }
+                }
+                File.WriteAllLines(name, usedCommands);
+            }
+            catch
+            {
+                Console.WriteLine("The input wasn't given correnctly!");
+            }
+        }
     }
 }
