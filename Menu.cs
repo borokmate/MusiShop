@@ -22,18 +22,18 @@ namespace MusiShop
             "Exit program"
         };
         private static readonly List<string> usedCommands = new();
-        // private static readonly Action[] mainMenuFuncs =
-        // {
-        //     CheckBacklog,
-        //     AddNewProduct,
-        //     EditProducts,
-        //     DeleteProducts,
-        //     ValidateFiles,
-        //     CommandLineInterpreter,
-        //     ExitProgram
-        // };
+        private static readonly Action[] mainMenuFuncs =
+        {
+            CheckBacklog,
+            AddNewProduct,
+            EditProducts,
+            DeleteProducts,
+            ValidateFiles,
+            CommandLineInterpreter,
+            ExitProgram
+        };
         private static readonly string[] currMenu = mainMenu;
-        // private static readonly Action[] currMenuFuncs = mainMenuFuncs;
+        private static readonly Action[] currMenuFuncs = mainMenuFuncs;
         private static int currItem = 0;
         private static void PrintMenu(string[] menu)
         {
@@ -65,7 +65,7 @@ namespace MusiShop
             {
                 Console.Clear();
                 GetMenuItem(currMenu);
-                // currMenuFuncs[currItem]();
+                currMenuFuncs[currItem]();
             }
         }
         private static void GetMenuItem(string[] menu)
@@ -83,7 +83,7 @@ namespace MusiShop
                         break;
                     case ConsoleKey.DownArrow:
                         if (currItem < menu.Length - 1) currItem++;
-                        else currItem = 1;
+                        else currItem = 0;
                         break;
                     default:
                         int found = Array.FindIndex(menu, x => x[0] == key.KeyChar);
