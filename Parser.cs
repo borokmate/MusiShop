@@ -101,10 +101,6 @@ namespace MusiShop
             {
                 File.Delete(fullPath);
             }
-            else
-            {
-                throw new Exception("whatadaf: " + fullPath);
-            }
             if (!Directory.Exists(newProduct.Type))
                 Directory.CreateDirectory(newProduct.Type);
             string file = JsonSerializer.Serialize(newProduct, options);
