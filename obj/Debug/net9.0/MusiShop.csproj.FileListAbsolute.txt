@@ -1,0 +1,15 @@
+/home/mateskio/Documents/Programming/MusiShop/bin/Debug/net9.0/MusiShop
+/home/mateskio/Documents/Programming/MusiShop/bin/Debug/net9.0/MusiShop.deps.json
+/home/mateskio/Documents/Programming/MusiShop/bin/Debug/net9.0/MusiShop.runtimeconfig.json
+/home/mateskio/Documents/Programming/MusiShop/bin/Debug/net9.0/MusiShop.dll
+/home/mateskio/Documents/Programming/MusiShop/bin/Debug/net9.0/MusiShop.pdb
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.GeneratedMSBuildEditorConfig.editorconfig
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.AssemblyInfoInputs.cache
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.AssemblyInfo.cs
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.csproj.CoreCompileInputs.cache
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.sourcelink.json
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.dll
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/refint/MusiShop.dll
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.pdb
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/MusiShop.genruntimeconfig.cache
+/home/mateskio/Documents/Programming/MusiShop/obj/Debug/net9.0/ref/MusiShop.dll

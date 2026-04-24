@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MusiShop")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e73e849adaa6f8bda15455e3ec582cee4afa958c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bc6396ffae165da7ae626964aca40ff0bab5b11a")]
 [assembly: System.Reflection.AssemblyProductAttribute("MusiShop")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MusiShop")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
